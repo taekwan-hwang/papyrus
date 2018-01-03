@@ -45,6 +45,8 @@
   <ItemGroup>
     <Content Include="main\templates\index.html" />
     <Content Include="requirements.txt" />
+    <None Include="sbigcon05py - Web Deploy.pubxml" />
+    <None Include="sbigcon05py - FTP.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="main\" />
