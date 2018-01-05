@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'sqlserver_ado'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -79,8 +78,8 @@ WSGI_APPLICATION = 'papyrus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'sqlserver_ado',
-        'NAME': 'severancebigcondb',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'severancebigcon',
         'HOST':'severancebigcon.database.windows.net',
         'PORT':'1433',
         'USER':'sbigcon05',

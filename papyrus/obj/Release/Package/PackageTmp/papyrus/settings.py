@@ -78,8 +78,13 @@ WSGI_APPLICATION = 'papyrus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'severancebigcon',
+        'HOST':'severancebigcon.database.windows.net',
+        'PORT':'1433',
+        'USER':'sbigcon05',
+        'PASSWORD':'P@ssw0rd'
+        
     }
 }
 
@@ -108,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -116,6 +121,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_CHARSET='utf-8'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
