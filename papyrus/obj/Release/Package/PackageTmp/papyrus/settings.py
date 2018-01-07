@@ -83,11 +83,16 @@ DATABASES = {
         'HOST':'severancebigcon.database.windows.net',
         'PORT':'1433',
         'USER':'sbigcon05',
-        'PASSWORD':'P@ssw0rd'
-        
+        'PASSWORD':'P@ssw0rd',
+        'OPTIONS':{
+                'extra_params':"DRIVER={ODBC Driver 11 for SQL Server}"
+            }
     }
 }
-
+DATABASE_OPTIONS = {
+    'charset': 'utf8',
+    'use_unicode':False
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -111,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 
