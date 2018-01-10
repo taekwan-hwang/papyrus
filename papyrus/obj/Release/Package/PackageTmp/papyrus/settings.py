@@ -91,7 +91,7 @@ DATABASES = {
 }
 DATABASE_OPTIONS = {
     'charset': 'utf8',
-    'use_unicode':False
+    'use_unicode':True
     }
 
 # Password validation
