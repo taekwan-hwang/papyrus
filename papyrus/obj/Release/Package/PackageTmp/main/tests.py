@@ -9,7 +9,12 @@ import django
 from django.test import TestCase
 
 # TODO: Configure your database in settings.py and sync before running tests.
-
+class ModelQueryTest(TestCase):
+    def import_model(*args):
+        from main.models import tong6
+        queryset=tong6.objects.all()
+        for query in queryset:
+            print(query)
 class SimpleTest(TestCase):
     """Tests for the application views."""
 
