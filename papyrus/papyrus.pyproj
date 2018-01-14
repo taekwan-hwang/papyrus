@@ -31,6 +31,9 @@
   <ItemGroup>
     <Compile Include="main\admin.py" />
     <Compile Include="main\apps.py" />
+    <Compile Include="main\cycle_divider.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main\migrations\__init__.py" />
     <Compile Include="main\models.py" />
     <Compile Include="main\serializers.py">
