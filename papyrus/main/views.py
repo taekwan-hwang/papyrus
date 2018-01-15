@@ -4,9 +4,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from main.serializers import TestSerializer
-from main.cycle_divider import get_by_cycle
-class Tong6List(APIView):
+from main.serializers import TestSerializer, TimeSerializer
+from main.cycle_divider import get_by_cycle, get_by_person
+class TestGetByCycle(APIView):
     def get(self, request, format=None):
         serializer=TestSerializer(get_by_cycle(1), many=True)
         return Response(serializer.data)
@@ -26,3 +26,7 @@ class Tong6List(APIView):
         serializer = tong6Serializer(query_set, many=True)
         return Response(name+num)
     """
+class TestGetByPerson(APIView):
+    def get(self, request, format=None):
+        serializer=TimeSerializer(get_by_person(), many=True)
+        return Response(serializer.data)

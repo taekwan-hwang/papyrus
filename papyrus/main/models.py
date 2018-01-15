@@ -73,7 +73,7 @@ class Test(models.Model):
 
 class Time(models.Model):
     pi=models.BigIntegerField(primary_key=True, db_column='PI')
-    hpday=models.DateField(db_column='Hpday')
+    hpday=models.DateField(db_column='Hpday')#hp_day
     hptime=models.DateTimeField(db_column='HPtime')
     pain=models.CharField(max_length=200, db_column='Pain')
     class Meta:

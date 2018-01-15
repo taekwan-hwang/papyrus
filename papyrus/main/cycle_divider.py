@@ -33,13 +33,22 @@ def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
 def get_by_person():
     t=Time.objects.all().order_by('pi')
     pis=[]
-	objs=[]
-	return_obj=[]
-	for i in t:
-		if not i.pi in pis:
-			pis.append(i.pi)
+    objs=[]
+    return_obj=[]
+    for i in t:
+        if not i.pi in pis:
+            pis.append(i.pi)
     for i in pis:
-		objs.append(Time.objects.filter(pi=i).order_by('hptime'))
-	for i in objs:
-		return_obj+=i
-	return return_obj
+        tmp=[]
+        time=Time.objects.filter(pi=i).order_by('hptime')
+        for j in time:
+            flag=True
+            for k in tmp:
+                if j.hp_day == k.hp_day:
+                    flag=False
+            if flag:
+                tmp.append(j)
+
+    for i in objs:
+        return_obj+=i
+    return return_obj
