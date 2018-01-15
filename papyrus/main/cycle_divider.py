@@ -40,14 +40,17 @@ def get_by_person():
             pis.append(i.pi)
     for i in pis:
         tmp=[]
+        hpdays=[]
         time=Time.objects.filter(pi=i).order_by('hptime')
         for j in time:
-            flag=True
-            for k in tmp:
-                if j.hp_day == k.hp_day:
-                    flag=False
-            if flag:
+            if j.hpday in hpdays:
                 tmp.append(j)
+            elif len(hpdays)<3:
+                hpdays.append(j.hpday)
+                tmp.append(j)
+            else:
+                break
+        objs.append(tmp)
 
     for i in objs:
         return_obj+=i
