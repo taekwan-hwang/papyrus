@@ -1,7 +1,7 @@
 from main.models import Test, Time
 
 def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
-    all=Test.objects.all().order_by('reg_num', 'hp_day')
+    all=Test.objects.all().order_by('reg_num')
     reg_nums=[]
     objs=[]
     return_obj=[]
@@ -23,15 +23,23 @@ def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
         temp.append(tmp)
 
     for i in temp:
-        if len(i)<n:#i[n] == None:
+        if len(i)<n:#i[n] == undifined:
             continue
         else:
             return_obj.append(i[n-1])
 
     return return_obj
 
-def order():
-    t=Time.objects.all().order_by('pi', 'hptime')
-    d1=get_by_cycle(1)
-    d2=get_by_cycle(2)
-    d3=get_by_cycle(3)
+def get_by_person():
+    t=Time.objects.all().order_by('pi')
+    pis=[]
+	objs=[]
+	return_obj=[]
+	for i in t:
+		if not i.pi in pis:
+			pis.append(i.pi)
+    for i in pis:
+		objs.append(Time.objects.filter(pi=i).order_by('hptime'))
+	for i in objs:
+		return_obj+=i
+	return return_obj
