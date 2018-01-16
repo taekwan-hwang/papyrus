@@ -92,6 +92,9 @@ def mean_pain_variance_by_cycle(cycle):
     for pi in pis:
         for i in return_obj:
             if i.pi==pi:
-                pains.append(int(i.pain))
+                try:
+                    pains.append(int(i.pain))
+                except ValueError:
+                    continue
         variances.append(numpy.var(pains))
     return numpy.mean(variances)
