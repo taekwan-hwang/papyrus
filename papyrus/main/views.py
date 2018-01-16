@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from main.serializers import TestSerializer, TimeSerializer
-from main.cycle_divider import get_by_cycle, get_by_person
+from main.cycle_divider import get_by_cycle, get_by_person, mean_pain_variance_by_cycle
 class TestGetByCycle(APIView):
     def get(self, request, format=None):
         serializer=TestSerializer(get_by_cycle(1), many=True)
@@ -30,3 +30,7 @@ class TestGetByPerson(APIView):
     def get(self, request, format=None):
         serializer=TimeSerializer(get_by_person(3), many=True)
         return Response(serializer.data)
+
+class TestVarianceMean(APIView):
+    def get(self, request, format=None):
+        return Response(mean_pain_variance_by_cycle(1))

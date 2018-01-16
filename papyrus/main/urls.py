@@ -3,5 +3,6 @@ from main import views
 
 urlpatterns = [
     url('testgetbycycle', views.TestGetByCycle.as_view()),
-    url('testgetbyperson', views.TestGetByPerson.as_view())
+    url('testgetbyperson', views.TestGetByPerson.as_view()),
+    url('testmeanpainvariance', views.TestVarianceMean.as_view())
 ]

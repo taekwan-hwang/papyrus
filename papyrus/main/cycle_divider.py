@@ -58,3 +58,40 @@ def get_by_person(n):
     for i in objs:
         return_obj.append(i)
     return return_obj
+
+def mean_pain_variance_by_cycle(cycle):
+    import numpy
+    t=Time.objects.all().order_by('pi')
+    pis=[]
+    objs=[]
+    return_obj=[]
+    for i in t:
+        if not i.pi in pis:
+            pis.append(i.pi)
+    for i in pis:
+        tmp=[]
+        hpdays=[]
+        time=Time.objects.filter(pi=i).order_by('hptime')
+        for j in time:
+            if j.hpday in hpdays:
+                tmp.append(j)
+            elif len(hpdays)<cycle:#cycle수를 3까지, 그 외에는 생각하지 않음
+                hpdays.append(j.hpday)
+                tmp.append(j)
+            else:
+                break
+        if len(hpdays)>=cycle:
+            for j in tmp:
+                if j.hpday==hpdays[cycle-1]:
+                    objs.append(j)
+
+    for i in objs:
+        return_obj.append(i)
+    pains=[]
+    variances=[]
+    for pi in pis:
+        for i in return_obj:
+            if i.pi==pi:
+                pains.append(int(i.pain))
+        variances.append(numpy.var(pains))
+    return numpy.mean(variances)
