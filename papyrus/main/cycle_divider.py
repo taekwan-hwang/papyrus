@@ -96,5 +96,9 @@ def mean_pain_variance_by_cycle(cycle):
                     pains.append(int(i.pain))
                 except ValueError:
                     continue
-        variances.append(numpy.var(pains))
+        var=numpy.var(pains)*len(pains)/(len(pains)-1)
+        if numpy.isnan(var):
+            variances.append(0)
+        else:
+            variances.append(numpy.var(pains))
     return numpy.mean(variances)
