@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from main.serializers import TestSerializer
+from main.serializers import TestSerializer, TimeSerializer
 from main.cycle_divider import get_by_cycle, get_by_person
 class TestGetByCycle(APIView):
     def get(self, request, format=None):
@@ -28,5 +28,5 @@ class TestGetByCycle(APIView):
     """
 class TestGetByPerson(APIView):
     def get(self, request, format=None):
-        serializer=TimeSerializer(get_by_person(), many=True)
+        serializer=TimeSerializer(get_by_person(3), many=True)
         return Response(serializer.data)

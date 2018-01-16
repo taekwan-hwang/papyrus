@@ -30,7 +30,7 @@ def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
 
     return return_obj
 
-def get_by_person():
+def get_by_person(n):
     t=Time.objects.all().order_by('pi')
     pis=[]
     objs=[]
@@ -39,7 +39,22 @@ def get_by_person():
         if not i.pi in pis:
             pis.append(i.pi)
     for i in pis:
-        objs.append(Time.objects.filter(pi=i).order_by('hptime'))
+        tmp=[]
+        hpdays=[]
+        time=Time.objects.filter(pi=i).order_by('hptime')
+        for j in time:
+            if j.hpday in hpdays:
+                tmp.append(j)
+            elif len(hpdays)<3:#cycle수를 3까지, 그 외에는 생각하지 않음
+                hpdays.append(j.hpday)
+                tmp.append(j)
+            else:
+                break
+        if len(hpdays)>=n:
+            for j in tmp:
+                if j.hpday==hpdays[n-1]:
+                    objs.append(j)
+
     for i in objs:
-        return_obj+=i
+        return_obj.append(i)
     return return_obj

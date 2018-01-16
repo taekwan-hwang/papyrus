@@ -28,5 +28,5 @@ class TestGetByCycle(APIView):
     """
 class TestGetByPerson(APIView):
     def get(self, request, format=None):
-        serializer=TimeSerializer(get_by_person(), many=True)
+        serializer=TimeSerializer(get_by_person(3), many=True)
         return Response(serializer.data)
