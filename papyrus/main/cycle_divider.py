@@ -89,7 +89,7 @@ def mean_pain_variance_by_cycle(cycle):
                 continue
         var=numpy.var(pains)*len(pains)/(len(pains)-1)
         if numpy.isnan(var):
-            variances.append(0)
+            pass
         else:
             variances.append(var)
     return numpy.mean(variances)
