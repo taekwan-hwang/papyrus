@@ -1,4 +1,12 @@
 from main.models import Test, Time
+from django.db import connection
+from django.db import models
+import gc
+def custom_sql(query):
+    cursor = connection.cursor()
+    cursor.execute(query)
+    row = cursor.fetchall()
+    return row
 
 def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
     all=Test.objects.all().order_by('reg_num')
@@ -60,36 +68,41 @@ def get_by_person(n):
     return return_obj
 
 def mean_pain_variance_by_cycle(cycle):
-    import numpy
-    t=Time.objects.all().order_by('pi', 'hptime')
-    pis=[]
-    objs=[]
-    for i in t:
-        if not i.pi in pis:
-            pis.append(i.pi)#환자번호추가
-    for i in pis:
-        hpdays=[]
-        time=t.filter(pi=i)
-        for j in time:
-            if len(hpdays)<cycle and not j.hpday in hpdays:
-                hpdays.append(j.hpday)
-            if not len(hpdays)<cycle:
-                break
-        if len(hpdays)<cycle:
-            continue
-        objs.append(time.filter(hpday=hpdays[cycle-1]))
-
+    import statistics
+    
     variances=[]
-    for i in objs:
+    pis= [i[0] for i in custom_sql('SELECT DISTINCT PI FROM Time order by PI')]
+    for i in pis:
+        gc.collect()
+        hpdays=[]
+        count=0
+        time=custom_sql('SELECT Hpday FROM Time where PI={} order by Hpday'.format(i))
+        #time=Time.objects.filter(pi=i).order_by('hptime')
+        for j in time:
+            gc.collect()
+            hpday=j[0]
+            if count<cycle and not hpday in hpdays:
+                hpdays.append(hpday)
+                count+=1
+            if count>=cycle:
+                break
+        if count<cycle:
+            continue
         pains=[]
-        for j in i:
+        tmp_arr=str(hpdays[cycle-1]).split('-')
+        day=''
+        for j in tmp_arr:
+            gc.collect()
+            day+=j
+        c=custom_sql("SELECT Pain FROM Time where Hpday='{}'AND PI={}".format(day,i))
+        for obj in c:
+            gc.collect()
             try:
-                pains.append(int(i.pain))
+                pains.append(int(obj[0]))
             except ValueError:
                 continue
-        var=numpy.var(pains)*len(pains)/(len(pains)-1)
-        if numpy.isnan(var):
+        try:
+            variances.append(statistics.variance(pains))
+        except :
             pass
-        else:
-            variances.append(var)
-    return numpy.mean(variances)
+    return statistics.mean(variances)
