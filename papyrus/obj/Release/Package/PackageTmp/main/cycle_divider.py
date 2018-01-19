@@ -1,4 +1,11 @@
 from main.models import Test, Time
+from django.db import connection
+from django.db import models
+def custom_sql(query):
+    cursor = connection.cursor()
+    cursor.execute(query)
+    row = cursor.fetchall()
+    return row
 
 def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
     all=Test.objects.all().order_by('reg_num')
@@ -60,45 +67,43 @@ def get_by_person(n):
     return return_obj
 
 def mean_pain_variance_by_cycle(cycle):
-    import numpy
-    t=Time.objects.all().order_by('pi')
+    import statistics
     pis=[]
-    objs=[]
-    return_obj=[]
-    for i in t:
-        if not i.pi in pis:
-            pis.append(i.pi)
-    for i in pis:
-        tmp=[]
-        hpdays=[]
-        time=Time.objects.filter(pi=i).order_by('hptime')
-        for j in time:
-            if j.hpday in hpdays:
-                tmp.append(j)
-            elif len(hpdays)<cycle:#cycle수를 3까지, 그 외에는 생각하지 않음
-                hpdays.append(j.hpday)
-                tmp.append(j)
-            else:
-                break
-        if len(hpdays)>=cycle:
-            for j in tmp:
-                if j.hpday==hpdays[cycle-1]:
-                    objs.append(j)
-
-    for i in objs:
-        return_obj.append(i)
-    pains=[]
     variances=[]
-    for pi in pis:
-        for i in return_obj:
-            if i.pi==pi:
-                try:
-                    pains.append(int(i.pain))
-                except ValueError:
-                    continue
-        var=numpy.var(pains)*len(pains)/(len(pains)-1)
-        if numpy.isnan(var):
+    pis_by_query=[]
+    excuter=custom_sql('SELECT PI FROM Time')
+    for i in excuter:
+        pis_by_query.append(i[0])
+    for i in pis_by_query:
+        if not i in pis:
+            pis.append(i)#환자번호추가
+    for i in pis:
+        hpdays=[]
+        count=0
+        time=custom_sql('SELECT Hpday FROM Time where PI={} order by Hpday'.format(i))
+        #time=Time.objects.filter(pi=i).order_by('hptime')
+        for j in time:
+            hpday=j[0]
+            if count<cycle and not hpday in hpdays:
+                hpdays.append(hpday)
+                count+=1
+            if count>=cycle:
+                break
+        if count<cycle:
+            continue
+        pains=[]
+        tmp_arr=str(hpdays[cycle-1]).split('-')
+        day=''
+        for i in tmp_arr:
+            day+=i
+        c=custom_sql("SELECT Pain FROM Time where Hpday='"+day+ "'AND PI="+str(i))
+        for obj in c:
+            try:
+                pains.append(int(obj[0]))
+            except ValueError:
+                continue
+        try:
+            variances.append(statistics.variance(pains))
+        except :
             pass
-        else:
-            variances.append(var)
-    return numpy.mean(variances)
+    return statistics.mean(variances)

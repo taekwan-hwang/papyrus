@@ -135,3 +135,6 @@ DEFAULT_CHARSET='utf-8'
 STATIC_URL = '/static/'
 
 STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
+
+CONN_MAX_AGE=None
+TIMEOUT=None

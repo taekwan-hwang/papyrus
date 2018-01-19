@@ -46,6 +46,9 @@
     <Compile Include="main\views.py" />
     <Compile Include="main\__init__.py" />
     <Compile Include="manage.py" />
+    <Compile Include="only_once_execute_task.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="papyrus\__init__.py" />
     <Compile Include="papyrus\settings.py" />
     <Compile Include="papyrus\urls.py" />
