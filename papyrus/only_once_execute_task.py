@@ -1,48 +1,67 @@
 import pyodbc
 import statistics
 
-def insert_variance_into_db(pi):
-    cnxn = pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;Connection Timeout=;', autocommit=True, timeout=900)
-    cursor = cnxn.cursor()
-    hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pi))]
-    cycle=1
-    variance_by_cycle=[]
-    for cycle_cur, hpday in enumerate(hpdays):
-        if cycle_cur == 3:
-            break
-        hpday=hpday
-        pain_arr=[]
+def insert_variance_into_db(pi, cursor):
+    hpdays=getHpdays(pi, cursor)
+
+    if len(hpdays)>=3:
+        hpday1=hpdays[0]
+        pains1=getPains(pi, hpday1, cursor)
+        variance1=getVariance(pains1)
+
+        hpday2=hpdays[1]
+        pains2=getPains(pi, hpday2, cursor)
+        variance2=getVariance(pains2)
+
+        hpday3=hpdays[2]
+        pains3=getPains(pi, hpday3, cursor)
+        variance3=getVariance(pains3)
+     
+        cursor.execute("insert into Var_Table(PI, var_cycle_1, var_cycle_2, var_cycle_3) values({},{},{},{})".format(pi, variance1, variance2, variance3))
+
+    elif len(hpdays)==2:
+        hpday1=hpdays[0]
+        pains1=getPains(pi, hpday1, cursor)
+        variance1=getVariance(pains1)
         
-        pains=[i[0] for i in cursor.execute("SELECT Pain From Time where PI={} AND Hpday='{}'".format(pi, hpday))]
-        for pain in pains:
-            try:
-                pain_arr.append(int(pain))
-            except ValueError:
-                continue
+        hpday2=hpdays[1]
+        pains2=getPains(pi, hpday2, cursor)
+        variance2=getVariance(pains2)
+
+        cursor.execute("insert into Var_Table(PI, var_cycle_1, var_cycle_2) values({},{},{})".format(pi, variance1, variance2))
+
+    elif len(hpdays)==1:
+        hpday1=hpdays[0]
+        pains1=getPains(pi, hpday1, cursor)
+        variance1=getVariance(pains1)
+
+        cursor.execute("insert into Var_Table(PI, var_cycle_1) values({},{})".format(pi, variance1))
+
+    else:
+        pass
+
+def getHpdays(pi, cursor):
+    hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pi))]
+    return hpdays
+
+def getPains(pi, hpday, cursor):
+    pains=[]
+    for pain in cursor.execute("SELECT Pain From Time where PI={} AND Hpday='{}'".format(pi, hpday)):
         try:
-            variances.append(statistics.variance(pains))
-        except :
-            pass
-        cycle+=1
-    if len(variance_by_cycle)==3:
-        cursor.execute('INSERT INTO Var_Table (PI,var_cycle_1,var_cycle_2,var_cycle_3) VALUES (%s,%.3f,%.3f,%.3f)'%(pi, variance_by_cycle[0], variance_by_cycle[1], variance_by_cycle[2]))
-    elif len(variance_by_cycle)==2:
-        cursor.execute('INSERT INTO Var_Table (PI,var_cycle_1,var_cycle_2) VALUES (%s,%.3f,%.3f)'%(pi, variance_by_cycle[0], variance_by_cycle[1]))
-    elif len(variance_by_cycle)==1:
-        cursor.execute('INSERT INTO Var_Table(PI,var_cycle_1) VALUES (%s, %.3f)'%(pi, variance_by_cycle[0]))
-    cnxn.commit()
-    cnxn.close()
+            pains.append(int(pain[0]))
+        except ValueError:
+            continue
+    return pains
 
-cnxn = pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;Connection Timeout=;', autocommit=True, timeout=900)
+def getVariance(pains):
+    try:
+        return statistics.variance(pains)
+    except :
+        return 'null'
+
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;', autocommit=True, timeout=900)
 cursor = cnxn.cursor()
-pis= [i[0] for i in cursor.execute('SELECT DISTINCT PI FROM Time order by PI')]
-"""pi가져오는 데 문제 없음"""
-hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pis[0]))]
-cursor.execute("insert into Var_Table(PI, temp_date) values({}, '{}')".format(pis[0], hpdays[0]))
-"""date 문제 없음"""
+pis=[i[0] for i in cursor.execute('select distinct PI from Time order by PI')]
 
-cnxn.commit()
-cnxn.close()
 for pi in pis:
-    insert_variance_into_db(pi)
-    break
+    insert_variance_into_db(pi, cursor)
