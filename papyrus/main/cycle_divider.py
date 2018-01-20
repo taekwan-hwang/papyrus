@@ -1,7 +1,7 @@
-from main.models import Test, Time
+from main.models import Test, Time, VarianceInCycle
 from django.db import connection
 from django.db import models
-import gc
+
 def custom_sql(query):
     cursor = connection.cursor()
     cursor.execute(query)
@@ -69,40 +69,21 @@ def get_by_person(n):
 
 def mean_pain_variance_by_cycle(cycle):
     import statistics
-    
+    obj_all=VarianceInCycle.objects.all()
     variances=[]
-    pis= [i[0] for i in custom_sql('SELECT DISTINCT PI FROM Time order by PI')]
-    for i in pis:
-        gc.collect()
-        hpdays=[]
-        count=0
-        time=custom_sql('SELECT Hpday FROM Time where PI={} order by Hpday'.format(i))
-        #time=Time.objects.filter(pi=i).order_by('hptime')
-        for j in time:
-            gc.collect()
-            hpday=j[0]
-            if count<cycle and not hpday in hpdays:
-                hpdays.append(hpday)
-                count+=1
-            if count>=cycle:
-                break
-        if count<cycle:
-            continue
-        pains=[]
-        tmp_arr=str(hpdays[cycle-1]).split('-')
-        day=''
-        for j in tmp_arr:
-            gc.collect()
-            day+=j
-        c=custom_sql("SELECT Pain FROM Time where Hpday='{}'AND PI={}".format(day,i))
-        for obj in c:
-            gc.collect()
-            try:
-                pains.append(int(obj[0]))
-            except ValueError:
-                continue
-        try:
-            variances.append(statistics.variance(pains))
-        except :
-            pass
+    for obj in obj_all:
+        if cycle==1:
+            var=obj.var_cycle_1
+            if var is not None:
+                variances.append(obj.var_cycle_1)
+        elif cycle==2:
+            var=obj.var_cycle_2
+            if var is not None:
+                variances.append(obj.var_cycle_2)
+        elif cycle==3:
+            var=obj.var_cycle_3
+            if var is not None:
+                variances.append(obj.var_cycle_3)
+        else :
+            raise ValueError("cycle out of range")
     return statistics.mean(variances)

@@ -176,3 +176,12 @@ class Tong8(models.Model):
     class Meta:
         managed=False
         db_table='TB_TONG_8'
+
+class VarianceInCycle(models.Model):
+    pi=models.BigIntegerField(db_column='PI', primary_key=True)
+    var_cycle_1=models.FloatField(db_column='var_cycle_1')
+    var_cycle_2=models.FloatField(db_column='var_cycle_2')
+    var_cycle_3=models.FloatField(db_column='var_cycle_3')
+    class Meta:
+        managed=False
+        db_table='Var_Table'

@@ -1,6 +1,7 @@
-from main.models import Test, Time
+from main.models import Test, Time, VarianceInCycle
 from django.db import connection
 from django.db import models
+
 def custom_sql(query):
     cursor = connection.cursor()
     cursor.execute(query)
@@ -68,42 +69,11 @@ def get_by_person(n):
 
 def mean_pain_variance_by_cycle(cycle):
     import statistics
-    pis=[]
+    obj_all=VarianceInCycle.objects.all()
     variances=[]
-    pis_by_query=[]
-    excuter=custom_sql('SELECT PI FROM Time')
-    for i in excuter:
-        pis_by_query.append(i[0])
-    for i in pis_by_query:
-        if not i in pis:
-            pis.append(i)#환자번호추가
-    for i in pis:
-        hpdays=[]
-        count=0
-        time=custom_sql('SELECT Hpday FROM Time where PI={} order by Hpday'.format(i))
-        #time=Time.objects.filter(pi=i).order_by('hptime')
-        for j in time:
-            hpday=j[0]
-            if count<cycle and not hpday in hpdays:
-                hpdays.append(hpday)
-                count+=1
-            if count>=cycle:
-                break
-        if count<cycle:
-            continue
-        pains=[]
-        tmp_arr=str(hpdays[cycle-1]).split('-')
-        day=''
-        for i in tmp_arr:
-            day+=i
-        c=custom_sql("SELECT Pain FROM Time where Hpday='"+day+ "'AND PI="+str(i))
-        for obj in c:
-            try:
-                pains.append(int(obj[0]))
-            except ValueError:
-                continue
-        try:
-            variances.append(statistics.variance(pains))
-        except :
-            pass
+    for obj in obj_all:
+        if cycle==1:
+            var=obj.var_cycle_1
+            if var is not None:
+                variances.append(obj.var_cycle_1)
     return statistics.mean(variances)

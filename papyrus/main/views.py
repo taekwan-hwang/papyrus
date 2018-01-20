@@ -36,7 +36,7 @@ class TestGetByPerson(APIView):
 
 class TestVarianceMean(APIView):
     def get(self, request, format=None):
-        return Response(mean_pain_variance_by_cycle(1))
+        return Response(mean_pain_variance_by_cycle(3))
 
 class Tong2View(APIView):
     def get(self, request, format=None, pi=0):
