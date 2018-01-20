@@ -76,4 +76,14 @@ def mean_pain_variance_by_cycle(cycle):
             var=obj.var_cycle_1
             if var is not None:
                 variances.append(obj.var_cycle_1)
+        elif cycle==2:
+            var=obj.var_cycle_2
+            if var is not None:
+                variances.append(obj.var_cycle_2)
+        elif cycle==3:
+            var=obj.var_cycle_3
+            if var is not None:
+                variances.append(obj.var_cycle_3)
+        else :
+            raise ValueError("cycle out of range")
     return statistics.mean(variances)
