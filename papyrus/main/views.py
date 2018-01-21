@@ -19,7 +19,9 @@ class Tong2View(APIView):
 
 class Tong5View(APIView):
     def get(self, request, format=None, pi=0):
-        serializer=Tong5Serializer(Tong5.objects.filter(pi=pi).order_by('format_date').last())
+        tong5obj=Tong5.objects.filter(pi=pi).order_by('format_date').last()
+        tong5obj.bmi_data=round(tong5obj.bmi_data, 1)
+        serializer=Tong5Serializer(tong5obj)
         return Response(serializer.data)
 
 class Tong8View(APIView):

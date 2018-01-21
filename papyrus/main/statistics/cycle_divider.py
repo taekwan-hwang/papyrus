@@ -1,13 +1,7 @@
 from main.models import Test, Time, VarianceInCycle
 from django.db import connection
 from django.db import models
-
-def custom_sql(query):
-    cursor = connection.cursor()
-    cursor.execute(query)
-    row = cursor.fetchall()
-    return row
-
+from main.util.query import custom_sql
 def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
     all=Test.objects.all().order_by('pi')
     reg_nums=[]

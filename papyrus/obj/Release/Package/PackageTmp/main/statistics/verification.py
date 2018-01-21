@@ -1,4 +1,5 @@
-from main.statistics.cycle_divider import mean_pain_variance_by_cycle, custom_sql
+from main.statistics.cycle_divider import mean_pain_variance_by_cycle
+from main.util.query import custom_sql
 import statistics
 from main.models import Tong2, VarianceInCycle
 from scipy.stats import chi2
