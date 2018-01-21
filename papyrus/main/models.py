@@ -33,8 +33,8 @@ class Hpday(models.Model):
         managed=False
 
 class Test(models.Model):
-    reg_num=models.BigIntegerField(db_column='등록번호', primary_key=True)
-    hp_day=models.DateField(db_column='입원일자')
+    pi=models.BigIntegerField(db_column='등록번호', primary_key=True)
+    hpday=models.DateField(db_column='입원일자')
     sex=models.CharField(max_length=1, db_column='성별')
     age=models.IntegerField(db_column='나이')
     height=models.FloatField(db_column='신장')

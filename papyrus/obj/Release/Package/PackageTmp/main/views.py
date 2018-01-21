@@ -8,6 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from main.serializers import Tong2Serializer, Tong5Serializer, Tong8Serializer
 from main.models import Tong2, Tong5, Tong8
 from main.statistics.verification import Verification
+from main.statistics.cycle_divider import get_cycle_by_person
 class Tong2View(APIView):
     def get(self, request, format=None, pi=0):
         objects=Tong2.objects.filter(pi=pi).filter(n_attr_codeNM='통증 강도').order_by('actual_datetime')
@@ -28,4 +29,8 @@ class Tong8View(APIView):
 
 class PchiVerification(APIView):
     def get(self, request, pi, cycle):
-        return Response(Verification.verify_by_pchisq(pi, cycle))
+        return Response(Verification.verify_by_pchisq(pi, int(cycle)))
+
+class CycleByPi(APIView):
+    def get(self, request, pi):
+        return get_cycle_by_person(pi)
