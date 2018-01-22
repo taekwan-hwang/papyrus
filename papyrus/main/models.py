@@ -185,3 +185,11 @@ class VarianceInCycle(models.Model):
     class Meta:
         managed=False
         db_table='Var_Table'
+
+class Move(models.Model):
+    pi=models.BigIntegerField(db_column='등록번호', primary_key=True)
+    format_date=models.DateField(db_column='서식작성일자')
+    move=models.CharField(max_length=100,db_column='이동 하기')
+    class Meta:
+        managed=False
+        db_table='Move'

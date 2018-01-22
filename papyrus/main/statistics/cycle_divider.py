@@ -2,7 +2,8 @@ from main.models import Test, Time, VarianceInCycle
 from django.db import connection
 from django.db import models
 from main.util.query import custom_sql
-def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
+
+def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드, cycle이 정해질 때 해당 사이클이 존재하는 환자들의 모든 데이터를 가져옴
     all=Test.objects.all().order_by('pi')
     reg_nums=[]
     objs=[]
@@ -25,14 +26,14 @@ def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드
         temp.append(tmp)
 
     for i in temp:
-        if len(i)<n:#i[n] == undifined:
+        if len(i)<n:#i[n] == undefined:
             continue
         else:
             return_obj.append(i[n-1])
 
     return return_obj
 
-def get_cycle_by_person(pi):
+def get_cycle_by_person(pi):#환자번호를 넣으면 해당 환자가 몇 번째 입원인지 알 수 있음
     return custom_sql("select count(distinct 입원일자) from TEST where 등록번호={}".format(pi))[0][0]
 
 def mean_pain_variance_by_cycle(cycle):
