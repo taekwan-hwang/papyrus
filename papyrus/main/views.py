@@ -43,7 +43,7 @@ class Tong8View(APIView):
 
 class PchiVerification(APIView):
     def get(self, request, pi):
-        return Response(Verification.verify_by_pchisq(pi))
+        return Response({'pchi':Verification.verify_by_pchisq(pi)})
 
 class CycleByPi(APIView):
     def get(self, request, pi):

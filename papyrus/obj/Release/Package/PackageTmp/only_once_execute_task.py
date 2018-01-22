@@ -40,7 +40,10 @@ def insert_variance_into_db(pi, cursor):
     else:
         pass
 
-def getHpdays(pi, cursor):
+def getHpdays(pi, cursor=None):
+    if cursor is None:
+        cursor=pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;', autocommit=True, timeout=900).cursor()
+
     hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pi))]
     return hpdays
 

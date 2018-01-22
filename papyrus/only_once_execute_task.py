@@ -1,7 +1,9 @@
 import pyodbc
 import statistics
 
-def insert_variance_into_db(pi, cursor):
+def insert_variance_into_db(pi,cursor=None):
+    if cursor is None:
+        cursor=getCursor()
     hpdays=getHpdays(pi, cursor)
 
     if len(hpdays)>=3:
@@ -40,11 +42,16 @@ def insert_variance_into_db(pi, cursor):
     else:
         pass
 
-def getHpdays(pi, cursor):
+def getHpdays(pi, cursor=None):
+    if cursor is None:
+        cursor=getCursor()
+
     hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pi))]
     return hpdays
 
-def getPains(pi, hpday, cursor):
+def getPains(pi, hpday, cursor=None):
+    if cursor is None:
+        cursor=getCursor()
     pains=[]
     for pain in cursor.execute("SELECT Pain From Time where PI={} AND Hpday='{}'".format(pi, hpday)):
         try:
@@ -58,6 +65,10 @@ def getVariance(pains):
         return statistics.variance(pains)
     except :
         return 'null'
+
+def getCursor():
+    cursor=pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;', autocommit=True, timeout=900).cursor()
+    return cursor
 
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;', autocommit=True, timeout=900)
 cursor = cnxn.cursor()

@@ -3,7 +3,7 @@ from django.db import connection
 from django.db import models
 from main.util.query import custom_sql
 
-def get_by_cycle(n):#싸이클별로 데이터 모아주는 코드, cycle이 정해질 때 해당 사이클이 존재하는 환자들의 모든 데이터를 가져옴
+def get_cycle_by_pi(n):
     all=Test.objects.all().order_by('pi')
     reg_nums=[]
     objs=[]
@@ -56,3 +56,10 @@ def mean_pain_variance_by_cycle(cycle):
         else :
             raise ValueError("cycle out of range")
     return statistics.mean(variances)
+
+def getHpdays(pi, cursor=None):
+    if cursor is None:
+        cursor=pyodbc.connect('DRIVER={ODBC Driver 11 for SQL Server};SERVER=tcp:severancebigcon.database.windows.net;DATABASE=severancebigcon;UID=sbigcon05;PWD=P@ssw0rd;', autocommit=True, timeout=900).cursor()
+
+    hpdays=[i[0] for i in cursor.execute('SELECT DISTINCT Hpday FROM Time where PI={} order by Hpday'.format(pi))]
+    return hpdays
