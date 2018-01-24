@@ -20,7 +20,8 @@ class Tong2View(APIView):
                 list.append({'pain':pain,'daytime':obj.actual_datetime})
             except ValueError:
                 pass
-        return Response({'pain_list':list, 'sex':objects.last().sex})
+        import statistics
+        return Response({'pain_list':list,'pain_avg':statistics.mean([i['pain'] for i in list]) , 'sex':objects.last().sex})
 
 class Tong5View(APIView):
     def get(self, request, format=None, pi=0):

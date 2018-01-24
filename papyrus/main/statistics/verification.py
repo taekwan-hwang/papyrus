@@ -7,6 +7,9 @@ class Verification:
     def verify_by_pchisq(pi):
         hpdays=getHpdays(pi=pi)
         cycle=len(hpdays)
+        if cycle > 1:
+            cycle -=1 
+
         variances_with_null=[i[0] for i in custom_sql("select Var_cycle_{} from Var_Cycle".format(cycle))]
         variances=[]
         for var in variances_with_null:

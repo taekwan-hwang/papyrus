@@ -17,10 +17,15 @@ class Tong2View(APIView):
         for obj in objects:
             try:
                 pain=(int)(obj.attr)
-                list.append({'pain':pain,'daytime':obj.actual_datetime})
+                list.append({'pain':pain,'hospitalization_date':obj.hospitalization_date,'daytime':obj.actual_datetime})
             except ValueError:
                 pass
-        return Response({'pain_list':list, 'sex':objects.last().sex})
+        import statistics
+        pain_avg=round(statistics.mean([i['pain'] for i in list]), 1)
+        if len(list)>10:
+            return Response({'pain_list':list[-10:],'pain_avg':pain_avg, 'sex':objects.last().sex})
+        else:
+            return Response({'pain_list':list,'pain_avg':pain_avg, 'sex':objects.last().sex})
 
 class Tong5View(APIView):
     def get(self, request, format=None, pi=0):

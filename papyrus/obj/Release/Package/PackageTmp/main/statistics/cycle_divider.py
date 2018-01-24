@@ -2,7 +2,7 @@ from main.models import Test, Time, VarianceInCycle
 from django.db import connection
 from django.db import models
 from main.util.query import custom_sql
-
+import pyodbc
 def get_cycle_by_pi(n):
     all=Test.objects.all().order_by('pi')
     reg_nums=[]
