@@ -25,7 +25,7 @@ Prerequisites
 2. 리포지토리 clone
 
 	~~~~
-	git clone https://sbigcon.visualstudio.com/_git/sbigcon05
+	git clone https://github.com/taekwan-hwang/papyrus.git
 	~~~~
 	
 3. python 모듈 의존성 설치
